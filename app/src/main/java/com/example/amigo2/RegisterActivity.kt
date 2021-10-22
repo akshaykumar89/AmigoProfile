@@ -69,9 +69,7 @@ class RegisterActivity : AppCompatActivity() {
                                 // Listener when data is stored successfully
 
                                 Toast.makeText(this, "Successfully Registered", Toast.LENGTH_SHORT).show()
-                                val intent = Intent(this, MainActivity::class.java).apply {
-                                }
-                                startActivity(intent)
+                               finish()
 
                             }.addOnFailureListener {
                                 // Listener when data does not store successfully

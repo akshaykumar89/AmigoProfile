@@ -63,10 +63,7 @@ class editprofileActivity : AppCompatActivity() {
                     Toast.makeText(this, "Successfully Update", Toast.LENGTH_SHORT).show()
 
                     // going back to login Screen
-                    val intent = Intent(this, MainActivity::class.java).apply {
-
-                    }
-                    startActivity(intent)
+                    finish()
                 }.addOnFailureListener {
                     // if Something went wrong
                     Toast.makeText(this, "Failed try Again", Toast.LENGTH_SHORT).show()
