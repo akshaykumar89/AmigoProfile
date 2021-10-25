@@ -1,13 +1,16 @@
 package com.example.amigo2
 
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
+import com.hbb20.CountryCodePicker
 
 class RegisterActivity : AppCompatActivity() {
     lateinit var database: DatabaseReference
@@ -26,57 +29,69 @@ class RegisterActivity : AppCompatActivity() {
         val etpassword = findViewById<EditText>(R.id.etPassword)
         val btnRegister: Button = findViewById(R.id.btnUpdate)
         val btnBack: Button = findViewById(R.id.btnBack)
+        val cpp = findViewById<CountryCodePicker>(R.id.ccp)
+        cpp.registerCarrierNumberEditText(etmobile)
 
         //When Register Button is clicked---
         btnRegister.setOnClickListener {
             // chekIf function check if All fields are filled
 
-            if (checkIf(etUserid.text.toString(),
-                            etName.text.toString(),
-                            etmobile.text.toString(),
-                            etEmail.text.toString(),
-                            etpassword.text.toString())) {
+            if (checkIf(
+                    etUserid.text.toString(),
+                    etName.text.toString(),
+                    etmobile.text.toString(),
+                    etEmail.text.toString(),
+                    etpassword.text.toString()
+                )
+            ) {
 
 
                 database.child(etUserid.text.toString()).get().addOnSuccessListener {
                     // IF user id already taken
                     if (it.exists()) {
-                        Toast.makeText(this, "User name already Taken \n  try diffrenet ", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this,
+                            "User name already Exists \n  try diffrenet ",
+                            Toast.LENGTH_SHORT
+                        ).show()
                         etUserid.setText("")
 
                     } else {
 
 
-                        if(etpassword.text.toString().length<7)
-                        {
-                            Toast.makeText(this, "Password is too small \n lenght should be more than 6", Toast.LENGTH_SHORT).show()
+                        if (etpassword.text.toString().length < 7) {
+                            Toast.makeText(
+                                this,
+                                "Password is too small \n lenght should be more than 6",
+                                Toast.LENGTH_SHORT
+                            ).show()
                             etpassword.setText("")
-                        }
-                        else {
+                        } else {
 
 
-                            // Getting  New User data and storing it in 'newuser' of 'User' data class type
-                            val newuser = User(etUserid.text.toString(),
-                                    etName.text.toString(),
-                                    etmobile.text.toString(),
-                                    etEmail.text.toString(),
-                                    etpassword.text.toString())
 
 
-                            // Writing data in Firebase Realtime database
-                            database.child(etUserid.text.toString()).setValue(newuser).addOnSuccessListener {
-
-                                // Listener when data is stored successfully
-
-                                Toast.makeText(this, "Successfully Registered", Toast.LENGTH_SHORT).show()
-                               finish()
-
-                            }.addOnFailureListener {
-                                // Listener when data does not store successfully
-                                Toast.makeText(this, "Failed", Toast.LENGTH_SHORT).show()
-
-
+                            val intent2 = Intent(this, Verify_OTP::class.java).apply {
+                                putExtra("mobilnumber", cpp.fullNumberWithPlus.replace(" ", ""))
                             }
+                             var sRef  = getSharedPreferences("key",MODE_PRIVATE)
+                            var editor = sRef.edit()
+                            editor.putString("mobilenumber", cpp.fullNumberWithPlus.replace(" ", ""))
+                            editor.putString("userid",etUserid.text.toString())
+                            editor.putString("name",etName.text.toString())
+                            editor.putString("email",etEmail.text.toString())
+                            editor.putString("password",etpassword.text.toString())
+                            editor.apply()
+
+
+
+
+
+                            startActivity(intent2)
+                            finish()
+
+
+
                         }
                     }
 
@@ -98,7 +113,13 @@ class RegisterActivity : AppCompatActivity() {
 
     }
 
-    private fun checkIf(userid: String, name: String, mobile: String, email: String, password: String): Boolean {
+    private fun checkIf(
+        userid: String,
+        name: String,
+        mobile: String,
+        email: String,
+        password: String
+    ): Boolean {
 
         if (userid == "" || name == "" || mobile == "" || email == "" || password == "") {
             Toast.makeText(this, "Please Enter All Details", Toast.LENGTH_SHORT).show()

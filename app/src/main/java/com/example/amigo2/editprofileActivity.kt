@@ -1,15 +1,11 @@
 package com.example.amigo2
 
-import android.content.Intent
-import android.media.AudioMetadata
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
-import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 
 class editprofileActivity : AppCompatActivity() {
@@ -27,7 +23,7 @@ class editprofileActivity : AppCompatActivity() {
         val etpassword = findViewById<EditText>(R.id.etPassword)
         val btnUpdate : Button=findViewById(R.id.btnUpdate)
         val btnBack : Button= findViewById(R.id.btnBack)
-        val tvname: TextView=findViewById(R.id.name)
+        val tvname: TextView=findViewById(R.id.tvRegisteredname)
 
 
         tvname.text=userid.toString()
