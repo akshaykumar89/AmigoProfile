@@ -1,1 +1,4 @@
 # AmigoProfile
+
+### Authentication with Firebase
+
